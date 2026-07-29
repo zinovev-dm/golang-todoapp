@@ -8,15 +8,13 @@
 2. добавляем Makefile
 3. добавляем миграции
 4. инициализируем приложение
-
-   ``` bash
+``` bash
    go mod init github.com/zinovev-dm/golang-todoapp
-   ```
+```
 
 5. добавляем пакеты
-
-   ``` bash
+``` bash
    go get -u go.uber.org/zap
    go get github.com/kelseyhightower/envconfig
    go get github.com/google/uuid
-   ```
+```
