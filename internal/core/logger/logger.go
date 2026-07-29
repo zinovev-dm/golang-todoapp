@@ -1,6 +1,7 @@
 package core_logger
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -49,4 +50,19 @@ func (logger *Logger) Close() {
 	if err := logger.file.Close(); err != nil {
 		fmt.Println("failed to close application logger:", err)
 	}
+}
+
+func (logger *Logger) With(field ...zap.Field) *Logger {
+	return &Logger{
+		Logger: logger.Logger.With(field...),
+		file:   logger.file,
+	}
+}
+
+func FromContext(ctx context.Context) *Logger {
+	log, ok := ctx.Value("log").(*Logger)
+	if !ok {
+		panic("no logger in context")
+	}
+	return log
 }
