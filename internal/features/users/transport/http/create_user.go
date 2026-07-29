@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+
+	core_logger "github.com/zinovev-dm/golang-todoapp/internal/core/logger"
 )
 
 type CreateUserRequest struct {
@@ -19,6 +21,11 @@ type CreateUserResponse struct {
 }
 
 func (h *UsersHTTPHandler) CreateUser(rw http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	logger := core_logger.FromContext(ctx)
+
+	logger.Debug("invoce CreateUser handler")
+
 	var request CreateUserRequest
 	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
 		fmt.Println("Ошибка создания пользователя")
