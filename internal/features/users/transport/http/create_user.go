@@ -24,10 +24,12 @@ func (h *UsersHTTPHandler) CreateUser(rw http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	logger := core_logger.FromContext(ctx)
 
-	logger.Debug("invoce CreateUser handler")
+	logger.Debug("invoke CreateUser handler")
 
 	var request CreateUserRequest
 	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
 		fmt.Println("Ошибка создания пользователя")
 	}
+
+	rw.WriteHeader(http.StatusOK)
 }

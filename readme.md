@@ -18,3 +18,8 @@
    go get github.com/kelseyhightower/envconfig
    go get github.com/google/uuid
 ```
+
+6. проверяем курлом
+``` bash
+curl -X POST localhost:5050/api/v1/users
+```
