@@ -1,16 +1,17 @@
 package users_transport_http
 
 import (
-	"encoding/json"
-	"fmt"
 	"net/http"
 
+	"github.com/zinovev-dm/golang-todoapp/internal/core/domain"
 	core_logger "github.com/zinovev-dm/golang-todoapp/internal/core/logger"
+	core_http_request "github.com/zinovev-dm/golang-todoapp/internal/core/transport/http/request"
+	core_http_response "github.com/zinovev-dm/golang-todoapp/internal/core/transport/http/response"
 )
 
 type CreateUserRequest struct {
-	FullName    string  `json:"full_name"`
-	PhoneNumber *string `json:"phone_number"`
+	FullName    string  `json:"full_name" validate:"required,min=3,max=100"`
+	PhoneNumber *string `json:"phone_number" validate:"omitempty,min=10,max=15,startswith=+"`
 }
 
 type CreateUserResponse struct {
@@ -23,13 +24,35 @@ type CreateUserResponse struct {
 func (h *UsersHTTPHandler) CreateUser(rw http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	logger := core_logger.FromContext(ctx)
-
 	logger.Debug("invoke CreateUser handler")
 
+	responseHandler := core_http_response.NewHTTPResponseHandler(logger, rw)
+
 	var request CreateUserRequest
-	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
-		fmt.Println("Ошибка создания пользователя")
+	if err := core_http_request.DecodeAndValidateRequest(r, &request); err != nil {
+		responseHandler.ErrorResponse(err, "failed to decode and validate HTTP request")
+		return
+	}
+	userDomain := domainFromDTO(request)
+	userDomain, err := h.usersService.CreateUser(ctx, userDomain)
+	if err != nil {
+		responseHandler.ErrorResponse(err, "failed to create user")
+		return
 	}
 
-	rw.WriteHeader(http.StatusOK)
+	response := dtoFromDomain(userDomain)
+	responseHandler.JSONResponse(response, http.StatusCreated)
+}
+
+func domainFromDTO(dto CreateUserRequest) domain.User {
+	return domain.NewUserUninitialized(dto.FullName, dto.PhoneNumber)
+}
+
+func dtoFromDomain(user domain.User) CreateUserResponse {
+	return CreateUserResponse{
+		ID:          user.ID,
+		Version:     user.Version,
+		FullName:    user.FullName,
+		PhoneNumber: *user.PhoneNumber,
+	}
 }

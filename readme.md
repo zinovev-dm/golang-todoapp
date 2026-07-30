@@ -17,6 +17,7 @@
    go get -u go.uber.org/zap
    go get github.com/kelseyhightower/envconfig
    go get github.com/google/uuid
+   go get github.com/go-playground/validator/v10
 ```
 
 6. проверяем курлом
