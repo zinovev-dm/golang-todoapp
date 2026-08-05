@@ -52,3 +52,38 @@ func (u *User) Validate() error {
 	}
 	return nil
 }
+
+type UserPath struct {
+	FullName    Nullable[string]
+	PhoneNumber Nullable[string]
+}
+
+func (p *UserPath) Validate() error {
+	if p.FullName.Set && p.FullName.Value == nil {
+		return fmt.Errorf("FullName can't be path to NULL: %w", core_errors.ErrInvalidArgument)
+	}
+	return nil
+}
+
+func (u *User) ApplyPath(path UserPath) error {
+	if err := path.Validate(); err != nil {
+		return fmt.Errorf("validate user path: %w", err)
+	}
+
+	tmp := *u
+
+	if path.FullName.Set {
+		tmp.FullName = *path.FullName.Value
+	}
+	if path.PhoneNumber.Set {
+		tmp.PhoneNumber = path.PhoneNumber.Value
+	}
+
+	if err := tmp.Validate(); err != nil {
+		fmt.Errorf("validate patched user: %w", err)
+	}
+
+	*u = tmp
+
+	return nil
+}

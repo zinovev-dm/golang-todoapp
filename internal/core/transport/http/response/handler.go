@@ -84,3 +84,7 @@ func (h *HTTPResponseHandler) JSONResponse(
 	}
 
 }
+
+func (h *HTTPResponseHandler) NoContentRespose() {
+	h.rw.WriteHeader(http.StatusNoContent)
+}
