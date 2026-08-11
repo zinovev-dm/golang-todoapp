@@ -58,6 +58,16 @@ type UserPath struct {
 	PhoneNumber Nullable[string]
 }
 
+func NewUserPath(
+	fullName Nullable[string],
+	phoneNumber Nullable[string],
+) UserPath {
+	return UserPath{
+		FullName:    fullName,
+		PhoneNumber: phoneNumber,
+	}
+}
+
 func (p *UserPath) Validate() error {
 	if p.FullName.Set && p.FullName.Value == nil {
 		return fmt.Errorf("FullName can't be path to NULL: %w", core_errors.ErrInvalidArgument)
@@ -80,7 +90,7 @@ func (u *User) ApplyPath(path UserPath) error {
 	}
 
 	if err := tmp.Validate(); err != nil {
-		fmt.Errorf("validate patched user: %w", err)
+		return fmt.Errorf("validate patched user: %w", err)
 	}
 
 	*u = tmp

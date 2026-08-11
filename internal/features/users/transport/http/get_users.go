@@ -5,8 +5,8 @@ import (
 	"net/http"
 
 	core_logger "github.com/zinovev-dm/golang-todoapp/internal/core/logger"
+	core_http_request "github.com/zinovev-dm/golang-todoapp/internal/core/transport/http/request"
 	core_http_response "github.com/zinovev-dm/golang-todoapp/internal/core/transport/http/response"
-	core_http_utils "github.com/zinovev-dm/golang-todoapp/internal/core/transport/http/utils"
 )
 
 type GetUsersResponse []UserDTOResponse
@@ -35,13 +35,17 @@ func (h *UsersHTTPHandler) GetUsers(rw http.ResponseWriter, r *http.Request) {
 }
 
 func getLimitOffsetParams(r *http.Request) (*int, *int, error) {
-	limit, err := core_http_utils.GetIntQueryParam(r, "limit")
+	const (
+		limitQueryParamKey  = "limit"
+		offsetQueryParamKey = "offset"
+	)
+	limit, err := core_http_request.GetIntQueryParam(r, limitQueryParamKey)
 	if err != nil {
-		return nil, nil, fmt.Errorf("get `limit` query param: %w", err)
+		return nil, nil, fmt.Errorf("get `%s` query param: %w", limitQueryParamKey, err)
 	}
-	offset, err := core_http_utils.GetIntQueryParam(r, "offset")
+	offset, err := core_http_request.GetIntQueryParam(r, offsetQueryParamKey)
 	if err != nil {
-		return nil, nil, fmt.Errorf("get `offset` query param: %w", err)
+		return nil, nil, fmt.Errorf("get `%s` query param: %w", offsetQueryParamKey, err)
 	}
 
 	return limit, offset, nil
