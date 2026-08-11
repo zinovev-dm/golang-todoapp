@@ -80,7 +80,7 @@ func (u *User) ApplyPath(path UserPath) error {
 	}
 
 	if err := tmp.Validate(); err != nil {
-		fmt.Errorf("validate patched user: %w", err)
+		return fmt.Errorf("validate patched user: %w", err)
 	}
 
 	*u = tmp
