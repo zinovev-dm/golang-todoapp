@@ -10,7 +10,6 @@ import (
 	core_http_request "github.com/zinovev-dm/golang-todoapp/internal/core/transport/http/request"
 	core_http_response "github.com/zinovev-dm/golang-todoapp/internal/core/transport/http/response"
 	core_http_types "github.com/zinovev-dm/golang-todoapp/internal/core/transport/http/types"
-	core_http_utils "github.com/zinovev-dm/golang-todoapp/internal/core/transport/http/utils"
 )
 
 type PathUserRequest struct {
@@ -52,7 +51,7 @@ func (h *UsersHTTPHandler) PathUser(rw http.ResponseWriter, r *http.Request) {
 	logger := core_logger.FromContext(ctx)
 	responseHandler := core_http_response.NewHTTPResponseHandler(logger, rw)
 
-	userID, err := core_http_utils.GetIntPathValue(r, "id")
+	userID, err := core_http_request.GetIntPathValue(r, "id")
 	if err != nil {
 		responseHandler.ErrorResponse(
 			err,
@@ -83,8 +82,8 @@ func (h *UsersHTTPHandler) PathUser(rw http.ResponseWriter, r *http.Request) {
 }
 
 func userPathFromRequest(request PathUserRequest) domain.UserPath {
-	return domain.UserPath{
-		FullName:    request.FullName.ToDomain(),
-		PhoneNumber: request.PhoneNumber.ToDomain(),
-	}
+	return domain.NewUserPath(
+		request.FullName.ToDomain(),
+		request.PhoneNumber.ToDomain(),
+	)
 }
