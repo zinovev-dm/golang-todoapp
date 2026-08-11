@@ -8,7 +8,7 @@ import (
 	"syscall"
 
 	core_logger "github.com/zinovev-dm/golang-todoapp/internal/core/logger"
-	core_repository_postgres_pool "github.com/zinovev-dm/golang-todoapp/internal/core/repository/postgres/pool"
+	core_pgx_pool "github.com/zinovev-dm/golang-todoapp/internal/core/repository/postgres/pool/pgx"
 	core_http_middleware "github.com/zinovev-dm/golang-todoapp/internal/core/transport/http/middleware"
 	core_http_server "github.com/zinovev-dm/golang-todoapp/internal/core/transport/http/server"
 	users_postgres_repository "github.com/zinovev-dm/golang-todoapp/internal/features/users/repository/postgres"
@@ -34,7 +34,7 @@ func main() {
 
 	logger.Debug("initializing Postgres connection pool")
 
-	pool, err := core_repository_postgres_pool.NewConnectionPool(ctx, *core_repository_postgres_pool.NewConfigMust())
+	pool, err := core_pgx_pool.NewPool(ctx, *core_pgx_pool.NewConfigMust())
 
 	if err != nil {
 		logger.Fatal("failed to init Postgres connection pool: %w", zap.Error(err))
