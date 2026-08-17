@@ -58,6 +58,15 @@ todoapp-run:
 	go mod tidy && \
 	go run ${PROJECT_ROOT}/cmd/todoapp/main.go
 
+logs-cleanup:
+	@read -p "Очистить все логи? Опасность утери данных. [y/N: ]" answer; \
+	if [ "$$answer" = "y" ]; then \
+		rm -rf ${PROJECT_ROOT}/out/logs && \
+		echo "Файлы логов очищены"; \
+	else \
+		echo "Очистка логов отменена"; \
+	fi
+
 todoapp-deploy:
 	@docker compose up -d --build todoapp
 
