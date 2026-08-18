@@ -20,6 +20,9 @@
    go get github.com/go-playground/validator/v10
    go get github.com/jackc/pgx/v5
    go get github.com/jackc/pgx/v5/pgxpool
+   go get github.com/swaggo/swag
+   go get github.com/swaggo/http-swagger
+   go get github.com/swaggo/http-swagger/v2
 ```
 
 6. проверяем курлом
